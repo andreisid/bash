@@ -8,12 +8,12 @@
 
 ##Run the following linei in terminal if you want to check server cyphers against client cyphers
 #declare -a a=$(openssl ciphers 'ALL:eNULL' | sed -e 's/:/\n /g') && for i in ${a}; do \
-#result=$(echo -n | openssl s_client -cipher "$i" -connect prdmks038:8443 2>&1); \
+#result=$(echo -n | openssl s_client -cipher "$i" -connect www.example.com:443 2>&1); \
 #if [[ "$result" =~ ":error:" ]] ; then echo "NO - $i"; else echo "YES - $i"; fi; done; 
 
 ##Run the following linei in terminal if you want to check server cyphers against cyphers in file.txt
 #declare -a a=$(cat file.txt) && for i in ${a}; do \
-#result=$(echo -n | openssl s_client -cipher "$i" -connect prdmks038:8443 2>&1); \
+#result=$(echo -n | openssl s_client -cipher "$i" -connect www.example.com:443 2>&1); \
 #if [[ "$result" =~ ":error:" ]] ; then echo "NO - $i"; else echo "YES - $i"; fi; done; 
 
 #!/usr/bin/env bash
