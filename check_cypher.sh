@@ -1,23 +1,60 @@
-##Script to check available ssl cyphers thath both a client and a server have
-##It takes a list of currently installed cyphers on the client and checks which one is also available on the server
+##Script to check installed ssl cyphers on a server
+##Usage:./check_cyphers -e <server>:<port> -f </path/to/file> 
+##     Example: ./check_cyphers -e example.com:443 -f /tmp/cyphers.txt
+
+##     If file parameter is not specified it will use the client list of cyphers
+##     If no parameter is specified it will list local cyphers 
+##     !!When using -f option please enter every cypher on a new line!! "
+
 
 #!/usr/bin/env bash
-if [ "$#" -eq  "0" ]
-   then
-     echo "Usage:./check_cyphers <hostname>:<port>"
- else
-##  You can use this script as a single-line command. Please see the commented lines below
-##
-##  declare -a a=$(openssl ciphers 'ALL:eNULL' | sed -e 's/:/\n /g') && for i in ${a}; do \
-##  result=$(echo -n | openssl s_client -cipher "$i" -connect $1 2>&1); \
-##  if [[ "$result" =~ ":error:" ]] ; then echo "NO - $i"; else echo "YES - $i"; fi; done;
+while [[ $# > 1 ]]
+do
+key="$1"
 
-declare -a a=$(openssl ciphers 'ALL:eNULL' | sed -e 's/:/\n /g') 
-for i in ${a}; do 
-    result=$(echo -n | openssl s_client -cipher "$i" -connect $1 2>&1); 
-    if [[ "$result" =~ ":error:" ]] ; then 
-        echo "NO - $i"; 
-    else echo "YES - $i"; 
-    fi; 
-done;
+case $key in
+    -e|--endpoint)
+    ENDPOINT="$2"
+    shift # past argument
+    ;;
+    -f|--fileath)
+    FILEPATH="$2"
+    shift # past argument
+    ;;
+    *)
+            # unknown option
+    ;;
+esac
+shift # past argument or value
+done
+#echo endpoint = "${ENDPOINT}"
+#echo file     = "${FILEPATH}"
+echo $1
+if [[ -n $1 ]]; then
+    echo -e " Usage:./check_cyphers -e <server>:<port> -f </path/to/file> \n Example: ./check_cyphers -e example.com:443 -f /tmp/cyphers.txt\
+    \n If file parameter is not specified it will use the client list of cyphers 
+    \n If no parameter is specified it will list local cyphers 
+    \n When using -f option please enter every cypher on a new line! "
+fi
+
+if [[ -z ${FILEPATH} ]] ; then
+    declare -a a=$(openssl ciphers 'ALL:eNULL' | sed -e 's/:/\n /g')
+    for i in ${a}; do
+        result=$(echo -n | openssl s_client -cipher "$i" -connect ${ENDPOINT} 2>&1);
+        if [[ "$result" =~ ":error:" ]] ; then
+            echo "NO - $i";
+            else echo "YES - $i";
+        fi;
+    done;
+    #echo "empty filepath0"
+else
+    declare -a a=$(cat ${FILEPATH})
+    for i in ${a}; do
+        result=$(echo -n | openssl s_client -cipher "$i" -connect ${ENDPOINT} 2>&1);
+        if [[ "$result" =~ ":error:" ]] ; then
+            echo "NO - $i";
+            else echo "YES - $i";
+        fi;
+    done;
+#echo filepath=${FILEPATH}
 fi
