@@ -1,17 +1,17 @@
-##Script to check installed ssl cyphers on a server
-##Usage:./check_cyphers -e <server>:<port> -f </path/to/file> 
-##     Example: ./check_cyphers -e example.com:443 -f /tmp/cyphers.txt
+##Script to check installed ssl ciphers on a server
+##Usage:./check_ciphers -e <server>:<port> -f </path/to/file> 
+##     Example: ./check_ciphers -e example.com:443 -f /tmp/ciphers.txt
 
-##     If file parameter is not specified it will use the client list of cyphers
-##     If no parameter is specified it will list local cyphers 
-##     !!When using -f option please enter every cypher on a new line!! "
+##     If file parameter is not specified it will use the client list of ciphers
+##     If no parameter is specified it will list local ciphers 
+##     !!When using -f option please enter every cipher on a new line!! "
 
-##Run the following linei in terminal if you want to check server cyphers against client cyphers
+##Run the following linei in terminal if you want to check server ciphers against client ciphers
 #declare -a a=$(openssl ciphers 'ALL:eNULL' | sed -e 's/:/\n /g') && for i in ${a}; do \
 #result=$(echo -n | openssl s_client -cipher "$i" -connect prdmks038:8443 2>&1); \
 #if [[ "$result" =~ ":error:" ]] ; then echo "NO - $i"; else echo "YES - $i"; fi; done; 
 
-##Run the following linei in terminal if you want to check server cyphers against cyphers in file.txt
+##Run the following linei in terminal if you want to check server ciphers against ciphers in file.txt
 #declare -a a=$(cat file.txt) && for i in ${a}; do \
 #result=$(echo -n | openssl s_client -cipher "$i" -connect prdmks038:8443 2>&1); \
 #if [[ "$result" =~ ":error:" ]] ; then echo "NO - $i"; else echo "YES - $i"; fi; done; 
@@ -40,10 +40,10 @@ done
 #echo file     = "${FILEPATH}"
 echo $1
 if [[ -n $1 ]]; then
-    echo -e " Usage:./check_cyphers -e <server>:<port> -f </path/to/file> \n Example: ./check_cyphers -e example.com:443 -f /tmp/cyphers.txt\
-    \n If file parameter is not specified it will use the client list of cyphers 
-    \n If no parameter is specified it will list local cyphers 
-    \n When using -f option please enter every cypher on a new line! "
+    echo -e " Usage:./check_ciphers -e <server>:<port> -f </path/to/file> \n Example: ./check_ciphers -e example.com:443 -f /tmp/ciphers.txt\
+    \n If file parameter is not specified it will use the client list of ciphers 
+    \n If no parameter is specified it will list local ciphers 
+    \n When using -f option please enter every cipher on a new line! "
 fi
 
 if [[ -z ${FILEPATH} ]] ; then
